@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, jsonify
 import os
 from config import add_logger
 from flask import send_file
@@ -20,14 +20,45 @@ def ticket_form():
     return render_template('ticket.html')
 
 
+@report.route('/select_detail', methods=['POST', 'GET'])
+def select_detail():
+
+    details_map = {
+        'Труба': {'col': 3, 'row': 11},
+        'Кронштейн': {'col': 3, 'row': 6},
+        'Крышка': {'col': 3, 'row': 16},
+        'Тройник': {'col': 3, 'row': 7}
+    }
+
+    detail = request.json.get('detail')
+    print(detail)
+
+    response = details_map.get(detail, {})
+    return jsonify(response), 200
+
+
+@report.route('/put_data', methods=['POST'])
+def save_data():
+    try:
+        data = request.get_json()
+        print(data)
+        if not data:
+            return jsonify({'error': 'Отсутствуют данные в запросе'}), 400
+
+        return jsonify({'message': 'Данные успешно сохранены'}), 200
+
+    except Exception as e:
+        # Логирование ошибки
+        print(f"Ошибка при сохранении данных: {str(e)}")
+        return jsonify({'error': 'Внутренняя ошибка сервера'}), 500
+
+
 @report.route('/submit_ticket', methods=['POST'])
 def submit_ticket():
     title = request.form['ticket_title']
     description = request.form['ticket_description']
     num_rows = int(request.form['table_rows'])
     num_cols = int(request.form['table_cols'])
-
-    # Здесь можно обработать данные о заявке и создать таблицу, сохранить данные в базе данных и т.д.
 
     return f'<h1>Ticket submitted:</h1><p>Title: {title}</p><p>Description: {description}</p><p>Table: {num_rows}x{num_cols}</p>'
 

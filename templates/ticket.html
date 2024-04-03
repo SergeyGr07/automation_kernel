@@ -34,16 +34,14 @@
                 <input type="text" class="form-control" id="ticket_title" name="ticket_title" required>
             </div>
             <div class="form-group">
-                <label for="ticket_description">Description:</label>
-                <textarea class="form-control" id="ticket_description" name="ticket_description" rows="4" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="table_rows">Number of Rows:</label>
-                <input type="number" class="form-control" id="table_rows" name="table_rows" min="1" required>
-            </div>
-            <div class="form-group">
-                <label for="table_cols">Number of Columns:</label>
-                <input type="number" class="form-control" id="table_cols" name="table_cols" min="1" required>
+                <label for="ticket_type">Type:</label>
+                <select class="form-control" id="ticket_type" name="ticket_type">
+                    <option value="default" selected>Choose a detail</option>
+                    <option value="Труба">Труба</option>
+                    <option value="Кронштейн">Кронштейн</option>
+                    <option value="Крышка">Крышка</option>
+                    <option value="Тройник">Тройник</option>
+                </select>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
