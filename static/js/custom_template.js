@@ -1,37 +1,30 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var form = document.getElementById('ticketForm');
     var currentUrl = window.location.origin;
-    var exportUrl = currentUrl + '/reports/select_detail';
-    var putDataUrl = currentUrl + '/reports/put_data';
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        var selectedDetail = document.getElementById('ticket_type').value;
-        
-        fetch(exportUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                detail: selectedDetail
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            var rows = data.row;
-            var cols = data.col;
-            console.log(rows, cols)
+    var putDataUrl = currentUrl + '/reports/custom_table';
 
+    function createTable() {
+        var titleInput = document.getElementById('titleInput');
+        var rowsInput = document.getElementById('rowsInput');
+        var colsInput = document.getElementById('colsInput');
+
+        var title = titleInput.value;
+        console.log(title)
+        var rows = parseInt(rowsInput.value);
+        console.log(rows)
+        var cols = parseInt(colsInput.value);
+        console.log(cols)
+
+        if (title && rows > 0 && cols > 0) {
             generateTable(rows, cols);
-        })
-        .catch(error => {
-            console.error('Ошибка:', error);
-        });
-    });
+        } else {
+            alert('Пожалуйста, введите корректные данные');
+        }
+    }
+
+    window.createTable = createTable;
 
     function generateTable(rows, cols) {
         var modalBody = document.getElementById('tableBody');
-        var selectedDetail = document.getElementById('ticket_type').value;
         var table = document.createElement('table');
         table.classList.add('table', 'table-bordered');
 
@@ -52,8 +45,14 @@ document.addEventListener("DOMContentLoaded", function() {
                         case 2:
                             cell.textContent = 'Measurements';
                             break;
+                        case 3:
+                            cell.setAttribute('contenteditable', 'true');
+                            break;
+                        case 4:
+                            cell.setAttribute('contenteditable', 'true');
+                            break;
                         default:
-                            cell.textContent = '';
+                            cell.setAttribute('contenteditable', 'true');
                             break;
                     }
                 } else {
@@ -77,11 +76,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
         var saveButton = document.getElementById('saveButton');
         saveButton.addEventListener('click', function() {
-            var tableName = document.getElementById('ticket_title').value;
-            // console.log(tableName)
+            var tableName = document.getElementById('titleInput').value;
             var tableData = [];
             var tbody = document.querySelector('table tbody');
-
+            var selectedDetail = document.getElementById('detailInput').value;
             tbody.querySelectorAll('tr').forEach(function(row) {
             var rowData = [];
             row.querySelectorAll('td').forEach(function(cell, index) {

@@ -4,8 +4,11 @@ from config import add_logger
 from flask import send_file
 from docx import Document
 from io import BytesIO
+import numpy as np
 # from docx.shared import Inches
 # from openpyxl import load_workbook
+import json
+import datetime
 
 
 script_name = os.path.splitext(os.path.basename(__file__))[0]
@@ -13,6 +16,11 @@ logger = add_logger(f'logger_{script_name}', script_name)
 
 
 report = Blueprint("reports", __name__)
+
+
+AVERAGE_COLUMN = 'Average'
+ALLOWANCE_COLUMN = 'Allowance'
+GEOMETRY_COLUMN = 'Geometry'
 
 
 @report.route('/ticket_form')
@@ -37,35 +45,103 @@ def select_detail():
     return jsonify(response), 200
 
 
+def create_table(data_json):
+    def calculate_average(numbers):
+        # Преобразование всех элементов в числа, игнорируя нечисловые значения
+        filtered_numbers = []
+        for x in numbers:
+            try:
+                filtered_numbers.append(float(x))
+            except ValueError:
+                continue
+        # Вычисление среднего значения, если есть числа
+        return round(np.mean(filtered_numbers), 2) if filtered_numbers else None
+
+    for title, section in data_json.items():
+        for item in section.values():
+            header = item[0]
+            header.extend(['Average', 'Allowance', 'Geometry'])
+            for row in item[1:]:
+                # Преобразование строковых измерений в числа
+                measurements = [x.replace(',', '.') for x in row[2]]
+                average = calculate_average(measurements)
+                row.extend([average, '', ''])
+
+    return data_json
+
+
 @report.route('/put_data', methods=['POST'])
 def save_data():
     try:
         data = request.get_json()
-        print(data)
+        print(data, '\n')
         if not data:
             return jsonify({'error': 'Отсутствуют данные в запросе'}), 400
+        table_name = next(iter(data))
+
+        print(create_table(data))
+        today_date = datetime.date.today().strftime("%d-%m-%Y")
+        print(today_date)
+        directory = f'data/json/{today_date}/'
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        file_path = f'{directory}/{table_name}.json'
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
 
         return jsonify({'message': 'Данные успешно сохранены'}), 200
 
     except Exception as e:
-        # Логирование ошибки
         print(f"Ошибка при сохранении данных: {str(e)}")
         return jsonify({'error': 'Внутренняя ошибка сервера'}), 500
 
 
-@report.route('/submit_ticket', methods=['POST'])
-def submit_ticket():
-    title = request.form['ticket_title']
-    description = request.form['ticket_description']
-    num_rows = int(request.form['table_rows'])
-    num_cols = int(request.form['table_cols'])
+@report.route('/custom_table', methods=['POST'])
+def save_custom_table():
+    try:
+        data = request.get_json()
+        print(data, '\n')
+        if not data:
+            return jsonify({'error': 'Отсутствуют данные в запросе'}), 400
+        table_name = next(iter(data))
 
-    return f'<h1>Ticket submitted:</h1><p>Title: {title}</p><p>Description: {description}</p><p>Table: {num_rows}x{num_cols}</p>'
+        print(create_table(data))
+        today_date = datetime.date.today().strftime("%d-%m-%Y")
+        print(today_date)
+        directory = f'data/json/{today_date}/'
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        file_path = f'{directory}/{table_name}.json'
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+
+        return jsonify({'message': 'Данные успешно сохранены'}), 200
+
+    except Exception as e:
+        print(f"Ошибка при сохранении данных: {str(e)}")
+        return jsonify({'error': 'Внутренняя ошибка сервера'}), 500
+
+
+# @report.route('/submit_ticket', methods=['POST'])
+# def submit_ticket():
+#     title = request.form['ticket_title']
+#     description = request.form['ticket_description']
+#     num_rows = int(request.form['table_rows'])
+#     num_cols = int(request.form['table_cols'])
+
+#     return f'<h1>Ticket submitted:</h1><p>Title: {title}</p><p>Description: {description}</p><p>Table: {num_rows}x{num_cols}</p>'
 
 
 @report.route('/')
 def reports():
     return render_template('reports.html')
+
+
+@report.route('/custom_template')
+def custom_template():
+    return render_template('custom_template.html')
 
 
 @report.route('/export_docx')
@@ -102,7 +178,6 @@ def fill_document():
             if '{{' + key + '}}' in paragraph.text:
                 paragraph.text = paragraph.text.replace('{{' + key + '}}', value)
 
-    # Замена плейсхолдеров в таблицах
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
