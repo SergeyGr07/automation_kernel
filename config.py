@@ -3,7 +3,7 @@ from loguru._logger import Logger
 import os
 import sys
 from dotenv import load_dotenv
-import ast
+# import ast
 
 load_dotenv()
 
@@ -12,8 +12,8 @@ DATABASE = '/tmp/appdb.db'
 DEBUG = True
 SECRET_KEY = 'secret'
 
-details_str = os.getenv('DETAILS')
-details_map = ast.literal_eval(details_str)
+details_map = os.getenv('DETAILS')
+# details_map = ast.literal_eval(details_str)
 LOG_PATH = os.getenv('LOG_PATH')
 
 
