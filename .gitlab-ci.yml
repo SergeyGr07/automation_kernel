@@ -14,7 +14,7 @@ variables:
   
   REGISTRY_USERNAME: nva
   REGISTRY_PASS: 9086620032vN
-  CONTAINER_TEST_IMAGE: automation-kernel:$CI_BUILD_REF_NAME
+  CONTAINER_TEST_IMAGE: automation-kernel:test
   CONTAINER_RELEASE_IMAGE: automation-kernel:latest
 #registry.rdlow.ru/politeh/
 
