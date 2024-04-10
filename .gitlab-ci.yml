@@ -19,6 +19,7 @@ variables:
 build:
   stage: build
   script:
+    - unset DOCKER_HOST
     - docker build -t $CONTAINER_TEST_IMAGE .
     - docker push $CONTAINER_TEST_IMAGE
   tags:
