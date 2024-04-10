@@ -4,7 +4,7 @@ services:
 
 stages:
 - build
-- test
+# - test
 - release
 - deploy
 
@@ -13,7 +13,7 @@ variables:
   CONTAINER_RELEASE_IMAGE: registry.rdlow.ru/politeh/automation-kernel:latest
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.rdlow.ru
+  - docker login -u nva -p 9086620032vN registry.rdlow.ru
 
 build:
   stage: build
@@ -31,18 +31,18 @@ build:
 #   script:
 #     - docker run $CONTAINER_TEST_IMAGE /script/to/run/another/test
 
-release-image:
-  stage: release
-  script:
-    - docker pull $CONTAINER_TEST_IMAGE
-    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
-    - docker push $CONTAINER_RELEASE_IMAGE
-  only:
-    - master
+# release-image:
+#   stage: release
+#   script:
+#     - docker pull $CONTAINER_TEST_IMAGE
+#     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+#     - docker push $CONTAINER_RELEASE_IMAGE
+#   only:
+#     - master
 
-deploy:
-  stage: deploy
-  script:
-    - ./deploy.sh
-  only:
-    - master
+# deploy:
+#   stage: deploy
+#   script:
+#     - ./deploy.sh
+#   only:
+#     - master
