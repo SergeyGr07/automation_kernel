@@ -10,7 +10,7 @@ stages:
 - deploy
 
 variables:
-  MY_GITLAB_REGISTRY: https://registry.rdlow.ru
+  MY_GITLAB_REGISTRY: registry.rdlow.ru
   
   REGISTRY_USERNAME: nva
   REGISTRY_PASS: 9086620032vN
