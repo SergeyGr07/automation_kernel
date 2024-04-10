@@ -24,7 +24,7 @@ before_script:
 build:
   stage: build
   script:
-    - echo $DOCKER_HOST
+    - docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASS $MY_GITLAB_REGISTRY
     - docker build -t $CONTAINER_TEST_IMAGE .
     - docker push $MY_GITLAB_REGISTRY/politeh/automation-kernel/$CONTAINER_TEST_IMAGE
   tags:
