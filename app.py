@@ -6,7 +6,7 @@ import os
 import json
 import sqlite3
 # from flask_login import LoginManager
-from datetime import datetime
+
 
 DATABASE = '/tmp/appdb.db'
 DEBUG = True
