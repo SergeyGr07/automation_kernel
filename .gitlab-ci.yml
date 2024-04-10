@@ -13,8 +13,8 @@ variables:
   CONTAINER_TEST_IMAGE: registry.rdlow.ru/politeh/automation-kernel:$CI_BUILD_REF_NAME
   CONTAINER_RELEASE_IMAGE: registry.rdlow.ru/politeh/automation-kernel:latest
 
-# before_script:
-#   - docker login -u nva -p 9086620032vN registry.rdlow.ru
+before_script:
+   - docker login -u nva -p 9086620032vN registry.rdlow.ru
 
 build:
   stage: build
