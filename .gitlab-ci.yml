@@ -20,7 +20,7 @@ build:
   script:
     - docker build -t $CONTAINER_TEST_IMAGE .
     - docker push $CONTAINER_TEST_IMAGE
-  tag:
+  tags:
     - test_runner
 
 # test1:
