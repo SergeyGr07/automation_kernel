@@ -1,7 +1,7 @@
 default:
-  image: docker:24.0.7
+  image: docker:26.0.0
   services:
-    - name: docker:24.0.7-dind
+    - name: docker:26.0.0-dind
 
 stages:
 - build
