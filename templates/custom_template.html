@@ -34,7 +34,12 @@
         <input type="text" id="titleInput" class="form-control mb-3" placeholder="Название">
         <input type="text" id="detailInput" class="form-control mb-3" placeholder="Деталь">
         <input type="number" id="rowsInput" class="form-control mb-3" placeholder="Количество строк">
-        <input type="number" id="colsInput" class="form-control mb-3" placeholder="Количество столбцов">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="myCheckbox">
+            <label class="form-check-label" for="myCheckbox">
+                Сохранить шаблон
+            </label>
+        </div>
         <button class="btn btn-primary" onclick="createTable()">Создать таблицу</button>
     </div>
     

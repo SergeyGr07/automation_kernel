@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify
 import os
-from config import add_logger
+from config import add_logger, details_map
 from flask import send_file
 from docx import Document
 from io import BytesIO
@@ -9,6 +9,9 @@ import numpy as np
 # from openpyxl import load_workbook
 import json
 import datetime
+from dotenv import load_dotenv, set_key
+
+load_dotenv()
 
 
 script_name = os.path.splitext(os.path.basename(__file__))[0]
@@ -30,16 +33,7 @@ def ticket_form():
 
 @report.route('/select_detail', methods=['POST', 'GET'])
 def select_detail():
-
-    details_map = {
-        'Труба': {'col': 3, 'row': 11},
-        'Кронштейн': {'col': 3, 'row': 6},
-        'Крышка': {'col': 3, 'row': 16},
-        'Тройник': {'col': 3, 'row': 7}
-    }
-
     detail = request.json.get('detail')
-    print(detail)
 
     response = details_map.get(detail, {})
     return jsonify(response), 200
@@ -71,17 +65,14 @@ def create_table(data_json):
 
 
 @report.route('/put_data', methods=['POST'])
-def save_data():
+def save_table():
     try:
         data = request.get_json()
-        print(data, '\n')
         if not data:
             return jsonify({'error': 'Отсутствуют данные в запросе'}), 400
         table_name = next(iter(data))
-
-        print(create_table(data))
+        create_table(data)
         today_date = datetime.date.today().strftime("%d-%m-%Y")
-        print(today_date)
         directory = f'data/json/{today_date}/'
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -101,21 +92,27 @@ def save_data():
 def save_custom_table():
     try:
         data = request.get_json()
-        print(data, '\n')
         if not data:
             return jsonify({'error': 'Отсутствуют данные в запросе'}), 400
         table_name = next(iter(data))
+        detail_name = next(iter(data[table_name]))
+        is_checked = data[table_name].get('isChecked')
+        if is_checked:
+            rows = data[table_name]['rows']
+            details_map[detail_name] = {'col': 3, 'row': rows}
+            set_key('.env', 'DETAILS', json.dumps(details_map, ensure_ascii=False))
 
-        print(create_table(data))
+        data[table_name] = {key: value for key, value in data[table_name].items() if key not in ['isChecked', 'rows']}
+        table = create_table(data)
+
         today_date = datetime.date.today().strftime("%d-%m-%Y")
-        print(today_date)
         directory = f'data/json/{today_date}/'
         if not os.path.exists(directory):
             os.makedirs(directory)
 
         file_path = f'{directory}/{table_name}.json'
         with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
+            json.dump(table, f, ensure_ascii=False, indent=4)
 
         return jsonify({'message': 'Данные успешно сохранены'}), 200
 

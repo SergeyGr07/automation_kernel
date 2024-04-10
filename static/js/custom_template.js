@@ -5,68 +5,55 @@ document.addEventListener("DOMContentLoaded", function() {
     function createTable() {
         var titleInput = document.getElementById('titleInput');
         var rowsInput = document.getElementById('rowsInput');
-        var colsInput = document.getElementById('colsInput');
-
+    
         var title = titleInput.value;
         console.log(title)
         var rows = parseInt(rowsInput.value);
         console.log(rows)
-        var cols = parseInt(colsInput.value);
-        console.log(cols)
-
-        if (title && rows > 0 && cols > 0) {
-            generateTable(rows, cols);
+    
+        if (title && rows > 0) {
+            generateTable(rows);
         } else {
             alert('Пожалуйста, введите корректные данные');
         }
     }
-
+    
     window.createTable = createTable;
-
-    function generateTable(rows, cols) {
+    
+    function generateTable(rows) {
         var modalBody = document.getElementById('tableBody');
         var table = document.createElement('table');
         table.classList.add('table', 'table-bordered');
-
+    
+        var thead = document.createElement('thead');
+        var headerRow = document.createElement('tr');
+        var headers = ['Position', 'Nominal', 'Measurements'];
+    
+        headers.forEach(function(headerText) {
+            var th = document.createElement('th');
+            th.textContent = headerText;
+            headerRow.appendChild(th);
+        });
+    
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+    
         var tbody = document.createElement('tbody');
-
-        for (var i = 0; i < rows; i++) {
+    
+        for (var i = 1; i <= rows; i++) {
             var row = document.createElement('tr');
-            for (var j = 0; j < cols; j++) {
+            for (var j = 0; j < 3; j++) {
                 var cell = document.createElement('td');
-                if (i === 0) {
-                    switch (j) {
-                        case 0:
-                            cell.textContent = 'Position';
-                            break;
-                        case 1:
-                            cell.textContent = 'Nominal';
-                            break;
-                        case 2:
-                            cell.textContent = 'Measurements';
-                            break;
-                        case 3:
-                            cell.setAttribute('contenteditable', 'true');
-                            break;
-                        case 4:
-                            cell.setAttribute('contenteditable', 'true');
-                            break;
-                        default:
-                            cell.setAttribute('contenteditable', 'true');
-                            break;
-                    }
+                if (j === 0) {
+                    cell.textContent = i;
                 } else {
-                    if (j === 0) {
-                        cell.textContent = i;
-                    } else {
-                        cell.setAttribute('contenteditable', 'true');
-                    }
+                    cell.setAttribute('contenteditable', 'true');
                 }
                 row.appendChild(cell);
             }
             tbody.appendChild(row);
         }
-
+    
         table.appendChild(tbody);
         modalBody.innerHTML = '';
         modalBody.appendChild(table);
@@ -80,6 +67,8 @@ document.addEventListener("DOMContentLoaded", function() {
             var tableData = [];
             var tbody = document.querySelector('table tbody');
             var selectedDetail = document.getElementById('detailInput').value;
+            var rowsInput = document.getElementById('rowsInput').value;
+            console.log(rowsInput)
             tbody.querySelectorAll('tr').forEach(function(row) {
             var rowData = [];
             row.querySelectorAll('td').forEach(function(cell, index) {
@@ -95,11 +84,25 @@ document.addEventListener("DOMContentLoaded", function() {
                 tableData.push(rowData);
             });
             console.log(selectedDetail)
-            var dataToSend = {
-                [tableName]: {
-                    [selectedDetail]: tableData
-                }
-            };
+
+            var isChecked = document.getElementById('myCheckbox').checked;
+            console.log(isChecked)
+
+            if (isChecked) {
+                var dataToSend = {
+                    [tableName]: {
+                        [selectedDetail]: tableData,
+                        isChecked: isChecked, 
+                        rows: rowsInput
+                    }
+                };
+            } else {
+                var dataToSend = {
+                    [tableName]: {
+                        [selectedDetail]: tableData,
+                    }
+                };
+            }
             
             console.log(dataToSend);
 

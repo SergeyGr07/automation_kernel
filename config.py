@@ -2,8 +2,19 @@ from loguru._logger import Core as _Core
 from loguru._logger import Logger
 import os
 import sys
+from dotenv import load_dotenv
+import ast
 
-LOG_PATH = "./log"
+load_dotenv()
+
+
+DATABASE = '/tmp/appdb.db'
+DEBUG = True
+SECRET_KEY = 'secret'
+
+details_str = os.getenv('DETAILS')
+details_map = ast.literal_eval(details_str)
+LOG_PATH = os.getenv('LOG_PATH')
 
 
 def add_logger(logger_name: str, script_name: str):
@@ -27,7 +38,3 @@ def add_logger(logger_name: str, script_name: str):
 
 script_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = add_logger(f'logger_{script_name}', script_name)
-
-DATABASE = '/tmp/appdb.db'
-DEBUG = True
-SECRET_KEY = 'secret'
