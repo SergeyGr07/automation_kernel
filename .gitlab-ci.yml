@@ -10,18 +10,23 @@ stages:
 - deploy
 
 variables:
-  CONTAINER_TEST_IMAGE: registry.rdlow.ru/politeh/automation-kernel:$CI_BUILD_REF_NAME
-  CONTAINER_RELEASE_IMAGE: registry.rdlow.ru/politeh/automation-kernel:latest
+  MY_GITLAB_REGISTRY: https://registry.rdlow.ru
+  
+  REGISTRY_USERNAME: nva
+  REGISTRY_PASS: 9086620032vN
+  CONTAINER_TEST_IMAGE: automation-kernel:$CI_BUILD_REF_NAME
+  CONTAINER_RELEASE_IMAGE: automation-kernel:latest
+#registry.rdlow.ru/politeh/
 
 before_script:
-   - docker login -u nva -p 9086620032vN registry.rdlow.ru
+   - docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASS $MY_GITLAB_REGISTRY
 
 build:
   stage: build
   script:
     - echo $DOCKER_HOST
-    - docker build -t my_first_container .
-    - docker push $CONTAINER_TEST_IMAGE
+    - docker build -t my_first_container:asd .
+    - docker tag my_first_container:latest push $CONTAINER_TEST_IMAGE
   tags:
     - runner-anoshko-1
 
