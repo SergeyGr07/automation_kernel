@@ -25,8 +25,8 @@ build:
   stage: build
   script:
     - echo $DOCKER_HOST
-    - docker build -t my_first_container:asd .
-    - docker tag my_first_container:latest push $CONTAINER_TEST_IMAGE
+    - docker build -t $CONTAINER_TEST_IMAGE .
+    - docker push $MY_GITLAB_REGISTRY/politeh/automation-kernel/$CONTAINER_TEST_IMAGE
   tags:
     - runner-anoshko-1
 
