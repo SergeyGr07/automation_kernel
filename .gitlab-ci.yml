@@ -21,7 +21,7 @@ build:
   script:
     - unset DOCKER_HOST
     - docker build -t my_first_container .
-    - docker push my_first_container
+    - docker push $CONTAINER_TEST_IMAGE
   tags:
     - runner-anoshko-1
 
