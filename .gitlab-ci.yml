@@ -17,7 +17,7 @@ build:
     - docker build -t $CONTAINER_TEST_IMAGE .
     - docker push $CONTAINER_TEST_IMAGE
   tags:
-    - test-runner
+    - runner-anoshko-1
 
 # test1:
 #   stage: test
