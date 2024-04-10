@@ -19,7 +19,7 @@ before_script:
 build:
   stage: build
   script:
-    - unset DOCKER_HOST
+    - echo $DOCKER_HOST
     - docker build -t my_first_container .
     - docker push $CONTAINER_TEST_IMAGE
   tags:
