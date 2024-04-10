@@ -20,8 +20,8 @@ build:
   stage: build
   script:
     - unset DOCKER_HOST
-    - docker build -t $CONTAINER_TEST_IMAGE .
-    - docker push $CONTAINER_TEST_IMAGE
+    - docker build -t my_first_container .
+    - docker push my_first_container
   tags:
     - runner-anoshko-1
 
