@@ -1,0 +1,57 @@
+default:
+  image: docker:26.0.0
+  services:
+    - name: docker:26.0.0-dind
+
+stages:
+- build
+# - test
+- release
+- deploy
+
+variables:
+  MY_GITLAB_REGISTRY: registry.rdlow.ru
+  
+  REGISTRY_USERNAME: nva
+  REGISTRY_PASS: 9086620032vN
+  CONTAINER_TEST_IMAGE: automation-kernel:test
+  CONTAINER_RELEASE_IMAGE: automation-kernel:latest
+#registry.rdlow.ru/politeh/
+
+before_script:
+   - docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASS $MY_GITLAB_REGISTRY
+
+build:
+  stage: build
+  script:
+    - docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASS $MY_GITLAB_REGISTRY
+    - docker build -t $CONTAINER_TEST_IMAGE .
+    - docker push $MY_GITLAB_REGISTRY/politeh/automation-kernel/$CONTAINER_TEST_IMAGE
+  tags:
+    - runner-anoshko-1
+
+# test1:
+#   stage: test
+#   script:
+#     - docker run $CONTAINER_TEST_IMAGE /script/to/run/tests
+
+# test2:
+#   stage: test
+#   script:
+#     - docker run $CONTAINER_TEST_IMAGE /script/to/run/another/test
+
+# release-image:
+#   stage: release
+#   script:
+#     - docker pull $CONTAINER_TEST_IMAGE
+#     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+#     - docker push $CONTAINER_RELEASE_IMAGE
+#   only:
+#     - master
+
+# deploy:
+#   stage: deploy
+#   script:
+#     - ./deploy.sh
+#   only:
+#     - master
