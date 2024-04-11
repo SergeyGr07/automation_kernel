@@ -15,19 +15,14 @@ variables:
 #registry.rdlow.ru/politeh/
 
 before_script:
-   - echo $GITLAB_USER_LOGIN
-   - echo $GITLAB_USER_NAME
-   - echo $CI_REGISTRY_USER
-   - echo $CI_PROJECT_PATH
-   - echo $CI_REGISTRY_PASSWORD
    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD  $CI_REGISTRY
 
 build:
   stage: build
   script:
-    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD  $CI_REGISTRY
-    - docker build -t $CONTAINER_TEST_IMAGE .
-    - docker tag $CONTAINER_TEST_IMAGE $CI_REGISTRY/politeh/automation-kernel/$CONTAINER_TEST_IMAGE
+    #- docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD  $CI_REGISTRY
+    - docker build -t $CONTAINER_RELEASE_IMAGE .
+    - docker tag $CONTAINER_RELEASE_IMAGE $CI_REGISTRY/politeh/automation-kernel/$CONTAINER_RELEASE_IMAGE
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$CONTAINER_TEST_IMAGE
   tags:
     - runner-anoshko-1
