@@ -10,6 +10,7 @@ import numpy as np
 import json
 import datetime
 from dotenv import load_dotenv, set_key
+from flask_cors import CORS
 
 load_dotenv()
 
@@ -19,6 +20,7 @@ logger = add_logger(f'logger_{script_name}', script_name)
 
 
 report = Blueprint("reports", __name__)
+CORS(report)
 
 
 AVERAGE_COLUMN = 'Average'
@@ -31,11 +33,20 @@ def ticket_form():
     return render_template('ticket.html')
 
 
+@report.route('/get_details')
+def get_details():
+    with open('data/json/jsons/detail.json', 'r', encoding='utf-8') as file:
+        details = json.load(file)
+        print(details)
+    return jsonify(details)
+
+
 @report.route('/select_detail', methods=['POST', 'GET'])
 def select_detail():
     detail = request.json.get('detail')
-
+    print(f"DETAIL_SD: {detail}")
     response = details_map.get(detail, {})
+    print(f"RESPONCE_SD:{response}")
     return jsonify(response), 200
 
 
@@ -92,6 +103,7 @@ def save_table():
 def save_custom_table():
     try:
         data = request.get_json()
+        print(data)
         if not data:
             return jsonify({'error': 'Отсутствуют данные в запросе'}), 400
         table_name = next(iter(data))

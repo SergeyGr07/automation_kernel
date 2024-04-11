@@ -23,16 +23,16 @@ document.getElementById('dateForm').addEventListener('submit', function(e) {
                     var table = document.createElement('table');
                     table.classList.add('table', 'table-bordered', 'mt-4');
 
-                    var thead = document.createElement('thead');
-                    var headerRow = document.createElement('tr');
-                    var headers = ['№', 'Value', 'Name', 'Average', 'Allowance', 'Geometry'];
-                    headers.forEach(function(header) {
-                        var th = document.createElement('th');
-                        th.textContent = header;
-                        headerRow.appendChild(th);
-                    });
-                    thead.appendChild(headerRow);
-                    table.appendChild(thead);
+                    // var thead = document.createElement('thead');
+                    // var headerRow = document.createElement('tr');
+                    // var headers = ['№', 'Value', 'Name', 'Average', 'Allowance', 'Geometry'];
+                    // headers.forEach(function(header) {
+                    //     var th = document.createElement('th');
+                    //     th.textContent = header;
+                    //     headerRow.appendChild(th);
+                    // });
+                    // thead.appendChild(headerRow);
+                    // table.appendChild(thead);
 
                     var tbody = document.createElement('tbody');
                     var rows = Object.values(data[key])[0];

@@ -1,3 +1,18 @@
+document.addEventListener('DOMContentLoaded', function() {
+    var currentUrl = window.location.origin;
+    var get_detail_url = currentUrl + '/reports/get_details';
+    fetch(get_detail_url)
+      .then(response => response.json())
+      .then(data => {
+        const select = document.getElementById('ticket_type');
+        data.details.forEach(detail => {
+          let option = new Option(detail.name, detail.value);
+          select.appendChild(option);
+        });
+      })
+      .catch(error => console.error('Ошибка:', error));
+  });
+
 document.addEventListener("DOMContentLoaded", function() {
     var form = document.getElementById('ticketForm');
     var currentUrl = window.location.origin;
@@ -18,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => response.json())
         .then(data => {
-            var rows = data.row;
+            var rows = data.row + 1;
             var cols = data.col;
             console.log(rows, cols)
 

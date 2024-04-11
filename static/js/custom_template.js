@@ -8,11 +8,12 @@ document.addEventListener("DOMContentLoaded", function() {
     
         var title = titleInput.value;
         console.log(title)
-        var rows = parseInt(rowsInput.value);
-        console.log(rows)
+        var rows = parseInt(rowsInput.value) + 1;
+        var cols = 3;
+        console.log(rows, cols)
     
         if (title && rows > 0) {
-            generateTable(rows);
+            generateTable(rows, cols);
         } else {
             alert('Пожалуйста, введите корректные данные');
         }
@@ -20,34 +21,39 @@ document.addEventListener("DOMContentLoaded", function() {
     
     window.createTable = createTable;
     
-    function generateTable(rows) {
+    function generateTable(rows, cols) {
         var modalBody = document.getElementById('tableBody');
+        // var selectedDetail = document.getElementById('ticket_type').value;
         var table = document.createElement('table');
         table.classList.add('table', 'table-bordered');
-    
-        var thead = document.createElement('thead');
-        var headerRow = document.createElement('tr');
-        var headers = ['Position', 'Nominal', 'Measurements'];
-    
-        headers.forEach(function(headerText) {
-            var th = document.createElement('th');
-            th.textContent = headerText;
-            headerRow.appendChild(th);
-        });
-    
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-    
+
         var tbody = document.createElement('tbody');
-    
-        for (var i = 1; i <= rows; i++) {
+
+        for (var i = 0; i < rows; i++) {
             var row = document.createElement('tr');
-            for (var j = 0; j < 3; j++) {
+            for (var j = 0; j < cols; j++) {
                 var cell = document.createElement('td');
-                if (j === 0) {
-                    cell.textContent = i;
+                if (i === 0) {
+                    switch (j) {
+                        case 0:
+                            cell.textContent = 'Position';
+                            break;
+                        case 1:
+                            cell.textContent = 'Nominal';
+                            break;
+                        case 2:
+                            cell.textContent = 'Measurements';
+                            break;
+                        default:
+                            cell.textContent = '';
+                            break;
+                    }
                 } else {
-                    cell.setAttribute('contenteditable', 'true');
+                    if (j === 0) {
+                        cell.textContent = i;
+                    } else {
+                        cell.setAttribute('contenteditable', 'true');
+                    }
                 }
                 row.appendChild(cell);
             }
