@@ -20,7 +20,7 @@ build:
   stage: build
   script:
     - docker build -t $CONTAINER_RELEASE_IMAGE .
-    - docker tag $CONTAINER_RELEASE_IMAGE $CI_REGISTRY/politeh/automation-kernel/$CONTAINER_RELEASE_IMAGE
+    - docker tag $CONTAINER_RELEASE_IMAGE $CI_REGISTRY/CI_PROJECT_PATH/$CONTAINER_RELEASE_IMAGE
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$CONTAINER_TEST_IMAGE
   tags:
     - runner-anoshko-1
