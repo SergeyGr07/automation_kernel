@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(response => response.json())
       .then(data => {
         const select = document.getElementById('ticket_type');
-        data.details.forEach(detail => {
+        data.detail_names.forEach(detail => {
           let option = new Option(detail.name, detail.value);
           select.appendChild(option);
         });

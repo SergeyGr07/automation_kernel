@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify
 import os
-from config import add_logger, details_map
+from config import add_logger, DETAILS_PATH
 from flask import send_file
 from docx import Document
 from io import BytesIO
@@ -9,10 +9,10 @@ import numpy as np
 # from openpyxl import load_workbook
 import json
 import datetime
-from dotenv import load_dotenv, set_key
+# from dotenv import load_dotenv, set_key
 from flask_cors import CORS
 
-load_dotenv()
+# load_dotenv()
 
 
 script_name = os.path.splitext(os.path.basename(__file__))[0]
@@ -35,7 +35,7 @@ def ticket_form():
 
 @report.route('/get_details')
 def get_details():
-    with open('data/json/jsons/detail.json', 'r', encoding='utf-8') as file:
+    with open(DETAILS_PATH, 'r', encoding='utf-8') as file:
         details = json.load(file)
         print(details)
     return jsonify(details)
@@ -45,7 +45,9 @@ def get_details():
 def select_detail():
     detail = request.json.get('detail')
     print(f"DETAIL_SD: {detail}")
-    response = details_map.get(detail, {})
+    with open(DETAILS_PATH, 'r', encoding='utf-8') as file:
+        details = json.load(file)
+    response = details["details_map"].get(detail)
     print(f"RESPONCE_SD:{response}")
     return jsonify(response), 200
 
@@ -107,12 +109,22 @@ def save_custom_table():
         if not data:
             return jsonify({'error': 'Отсутствуют данные в запросе'}), 400
         table_name = next(iter(data))
+        print(f"TABLE_NAME: {table_name}")
         detail_name = next(iter(data[table_name]))
+        print(f"DETAIL_NAME: {detail_name}")
         is_checked = data[table_name].get('isChecked')
         if is_checked:
-            rows = data[table_name]['rows']
-            details_map[detail_name] = {'col': 3, 'row': rows}
-            set_key('.env', 'DETAILS', json.dumps(details_map, ensure_ascii=False))
+            rows = int(data[table_name]['rows'])
+            print(f"ROWS: {rows}")
+            new_detail = {'col': 3, 'row': rows}
+            new_name = {"name": detail_name, "value": detail_name}
+            with open(DETAILS_PATH, 'r', encoding='utf-8') as file:
+                details = json.load(file)
+            print(f"DETAIL_CT: {details}")
+            details['details_map'][detail_name] = new_detail
+            details['detail_names'].append(new_name)
+            with open(DETAILS_PATH, 'w', encoding='utf-8') as file:
+                json.dump(details, file, ensure_ascii=False, indent=4)
 
         data[table_name] = {key: value for key, value in data[table_name].items() if key not in ['isChecked', 'rows']}
         table = create_table(data)
@@ -129,6 +141,7 @@ def save_custom_table():
         return jsonify({'message': 'Данные успешно сохранены'}), 200
 
     except Exception as e:
+        print(e)
         print(f"Ошибка при сохранении данных: {str(e)}")
         return jsonify({'error': 'Внутренняя ошибка сервера'}), 500
 

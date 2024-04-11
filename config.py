@@ -20,6 +20,7 @@ details_map = {
 
 
 LOG_PATH = os.getenv('LOG_PATH')
+DETAILS_PATH = os.getenv('DETAILS_PATH')
 
 
 def add_logger(logger_name: str, script_name: str):
