@@ -30,7 +30,7 @@ deploy:
   stage: deploy
   script:
     - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD  $CI_REGISTRY
-    - docker pull $CONTAINER_RELEASE_IMAGE
-    - docker run -d --name $CONTAINER_RELEASE_IMAGE -p 5000:5000 $CI_REGISTRY/$CI_PROJECT_PATH/$CONTAINER_RELEASE_IMAGE
+    - docker pull $CI_REGISTRY/$CI_PROJECT_PATH/$CONTAINER_RELEASE_IMAGE
+    - docker run -d --name $CONTAINER_RELEASE_IMAGE -p 5000:5000 $CONTAINER_RELEASE_IMAGE
   tags:
     - runner-anoshko-1
