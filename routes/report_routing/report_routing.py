@@ -81,6 +81,7 @@ def create_table(data_json):
 def save_table():
     try:
         data = request.get_json()
+        print(data)
         if not data:
             return jsonify({'error': 'Отсутствуют данные в запросе'}), 400
         table_name = next(iter(data))
@@ -93,7 +94,7 @@ def save_table():
         file_path = f'{directory}/{table_name}.json'
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
-
+        print("Save data")
         return jsonify({'message': 'Данные успешно сохранены'}), 200
 
     except Exception as e:

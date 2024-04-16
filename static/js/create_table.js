@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", function() {
     form.addEventListener('submit', function(event) {
         event.preventDefault();
         var selectedDetail = document.getElementById('ticket_type').value;
-        
         fetch(exportUrl, {
             method: 'POST',
             headers: {
@@ -36,7 +35,6 @@ document.addEventListener("DOMContentLoaded", function() {
             var rows = data.row + 1;
             var cols = data.col;
             console.log(rows, cols)
-
             generateTable(rows, cols);
         })
         .catch(error => {
@@ -89,6 +87,70 @@ document.addEventListener("DOMContentLoaded", function() {
 
         var modal = new bootstrap.Modal(document.getElementById('tableModal'));
         modal.show();
+
+        var nextButton = document.getElementById('nextButton');
+        nextButton.addEventListener('click', function() {
+            var tableName = document.getElementById('ticket_title').value;
+            var tableData = [];
+            var tbody = document.querySelector('table tbody');
+
+            tbody.querySelectorAll('tr').forEach(function(row) {
+            var rowData = [];
+            row.querySelectorAll('td').forEach(function(cell, index) {
+                if (row.rowIndex !== 0 && index !== 0) {
+                    var cellData = cell.textContent.split(',').map(function(item) {
+                        return item.trim();
+                    });
+                    rowData.push(cellData);
+                } else {
+                    rowData.push(cell.textContent);
+                }
+            });
+                tableData.push(rowData);
+            });
+            console.log(selectedDetail)
+            var dataToSend = {
+                [tableName]: {
+                    [selectedDetail]: tableData
+                }
+            };
+            
+            console.log(dataToSend);
+
+            fetch(putDataUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataToSend)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Данные успешно сохранены!');
+
+                } else {
+                    throw new Error('Произошла ошибка при сохранении данных');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при сохранении данных:', error);
+            });
+            generateTable(rows, cols);
+            
+        });
+
+        function clearTable() {
+            var tbody = document.querySelector('table tbody');
+            tbody.querySelectorAll('tr').forEach((row, index) => {
+                if (index !== 0) { // Пропускаем заголовок таблицы
+                    row.querySelectorAll('td').forEach((cell, cellIndex) => {
+                        if (cellIndex !== 0) { // Пропускаем столбец с номером позиции
+                            cell.textContent = ''; // Очищаем данные ячейки
+                        }
+                    });
+                }
+            });
+        }
 
         var saveButton = document.getElementById('saveButton');
         saveButton.addEventListener('click', function() {
