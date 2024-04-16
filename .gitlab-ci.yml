@@ -33,6 +33,6 @@ deploy:
     - docker stop $CONTAINER_NAME
     - docker rm $CONTAINER_NAME
     - docker pull $CI_REGISTRY/$CI_PROJECT_PATH/$CONTAINER_RELEASE_IMAGE
-    - docker run -d --name $CONTAINER_NAME -p 5000:5000 $CONTAINER_RELEASE_IMAGE
+    - docker run -d --name $CONTAINER_NAME -v /opt/automation_kernel:/app/data/json -p 5000:5000 $CONTAINER_RELEASE_IMAGE
   tags:
     - runner-anoshko-1
